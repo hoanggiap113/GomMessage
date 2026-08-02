@@ -1,0 +1,6 @@
+@GomMessage.Api_HostAddress = http://localhost:5009
+
+GET {{GomMessage.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

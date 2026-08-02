@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>GomMessage.Application</RootNamespace>
+    <AssemblyName>GomMessage.Application</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Auth\Queries\" />
+    <Folder Include="Tenant\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="9.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.0.1" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GomMessage.Domain\GomMessage.Domain.csproj" />
+  </ItemGroup>
+</Project>
