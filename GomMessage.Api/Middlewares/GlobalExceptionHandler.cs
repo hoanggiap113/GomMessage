@@ -97,13 +97,17 @@ namespace GomMessage.Api.Middlewares
 
         private static int GetDomainStatusCode(DomainException domainException)
         {
-            return domainException.ErrorCode?.Code switch
+            if (domainException.ErrorCode == null)
+            {
+                return StatusCodes.Status400BadRequest;
+            }
+
+            return domainException.ErrorCode.Code switch
             {
                 "USER_ALREADY_EXISTS" => StatusCodes.Status409Conflict,
                 "RESOURCE_NOT_FOUND" => StatusCodes.Status404NotFound,
                 _ => StatusCodes.Status400BadRequest
             };
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using GomMessage.Application.Dtos;
+﻿using GomMessage.Application.Auth.Dtos;
 using GomMessage.Application.Interfaces;
 using GomMessage.Infrastructure.Settings;
 using MailKit.Net.Smtp;

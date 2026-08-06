@@ -1,4 +1,4 @@
-﻿using GomMessage.Application.Dtos;
+﻿using GomMessage.Application.Auth.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

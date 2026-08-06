@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Dtos
 {
-    public sealed record RegisterUserResponse(string message);
-
+    public sealed record VerifyOtpRequest(string Email, string Otp);
+    
 }

@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Auth\Queries\" />
+    <Folder Include="Mail\" />
     <Folder Include="Tenant\" />
   </ItemGroup>
   <ItemGroup>

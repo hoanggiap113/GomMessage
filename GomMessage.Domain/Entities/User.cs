@@ -14,7 +14,6 @@ public sealed class User : AuditableEntity
     public string? Telephone { get; private set; }
     public UserStatus Status { get; private set; }
     public int TokenVersion { get; private set; }
-
     private User()
     {
     }

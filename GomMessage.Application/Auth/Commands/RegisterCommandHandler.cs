@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Commands
 {
-    public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterUserResponse>
+    public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, string>
     {
         private readonly IUserRepository _userRepository;
         private readonly ICacheService _cacheService;
@@ -29,28 +29,45 @@ namespace GomMessage.Application.Auth.Commands
             _hashPasswordService = hashPasswordService;
             _emailService = emailService;
         }
-        public async Task<RegisterUserResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.ExistsByEmailAsync(request.Email);
+            var existingUser = await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken);
             if (existingUser)
             {
                 throw new DomainException("User with this email already exists.");
             }
+            var cacheKey = $"user_{request.Email}";
 
+            var cacheUser = await _cacheService.GetAsync<User>(cacheKey, cancellationToken);
+            if (cacheUser != null)
+            {
+                throw new DomainException("User with this email is already in the process of registration.");
+            }
 
             var user = User.Register(
                 request.Email, 
                 _hashPasswordService.HashPassword(request.Password), 
                 request.Name, 
                 request.Telephone);
+
+            if (cacheUser != null)
+            {
+                throw new DomainException("User with this email is already in the process of registration.");
+            }
+
             string otp = GenerateOtp();
-            var cacheKey = $"user_{user.Id}";
-            await _cacheService.SetAsync(cacheKey, new { user.Id, user.Email, user.Name, user.PasswordHash, user.Telephone,otp },
+            var userCache = new UserCache(
+                user.Name,
+                user.Email,
+                user.PasswordHash,
+                otp,
+                user.Telephone);
+            await _cacheService.SetAsync(cacheKey, userCache,
                  TimeSpan.FromHours(1),cancellationToken);
 
             await _emailService.SendOtpCode(user.Email, user.Email, otp);
             
-            return new RegisterUserResponse("success register!");
+            return "success register!";
     
         }
         private string GenerateOtp(int length = 6)

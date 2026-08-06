@@ -23,6 +23,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
+
 app.MapGet("/", () => "Hello World!");
 
 app.UseHttpsRedirection();

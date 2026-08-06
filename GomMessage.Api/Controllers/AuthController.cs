@@ -38,5 +38,20 @@ namespace GomMessage.Api.Controllers
                 data = result
             });
         }
+        [HttpPost("verify-otp")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest dto, CancellationToken ct)
+        {
+            var command = new VerifyOtpCommand(dto.Email, dto.Otp);
+            var result = await _mediator.Send(command);
+            return Ok(new
+            {
+                success = true,
+                message = "User registered successfully please verify your email",
+                data = result
+            });
+        }
     }
 }
