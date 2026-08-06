@@ -29,9 +29,9 @@ namespace GomMessage.Infrastructure.Repository
             return await _context.Users.AnyAsync(u => u.Email == email, ct);
         }
 
-        public Task<User?> GetByEmailAsync(string email, CancellationToken ct)
+        public async Task<User?> GetByEmailAsync(string email, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
         }
 
         public Task<User?> GetByIdAsync(Guid id, CancellationToken ct)

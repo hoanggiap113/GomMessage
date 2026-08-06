@@ -53,5 +53,19 @@ namespace GomMessage.Api.Controllers
                 data = result
             });
         }
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login([FromBody] LoginCommand dto, CancellationToken ct)
+        {
+            var result = await _mediator.Send(dto);
+            return Ok(new
+            {
+                success = true,
+                message = "User logged in successfully",
+                data = result
+            });
+        }
     }
 }

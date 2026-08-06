@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
+using GomMessage.Application.Auth.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GomMessage.Application.Auth.Commands
+namespace GomMessage.Application.Auth.Validators
 {
     public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
     {

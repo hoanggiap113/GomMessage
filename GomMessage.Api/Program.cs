@@ -1,6 +1,7 @@
 using GomMessage.Api.Middlewares;
 using GomMessage.Application;
 using GomMessage.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

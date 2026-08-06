@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Commands
 {
-    public sealed record LoginCommand(string Email, string Password) : IRequest<AuthResponse>;
+    public sealed record LoginCommand(string Email, string Password) : IRequest<LoginResponse>;
 }

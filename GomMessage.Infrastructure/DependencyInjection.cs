@@ -30,8 +30,12 @@ namespace GomMessage.Infrastructure
                 options.InstanceName = redisSettings.InstanceName;
             });
 
+
             //MailService Configuration
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+
+            //Authentication
+            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMailService, MailService>();
