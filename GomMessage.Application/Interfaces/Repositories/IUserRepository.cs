@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GomMessage.Application.Interfaces
+namespace GomMessage.Application.Interfaces.Repositories
 {
     public interface IUserRepository
     {

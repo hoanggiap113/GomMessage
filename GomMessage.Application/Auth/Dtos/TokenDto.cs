@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Dtos
 {
-    public sealed record LoginResponse(string accessToken, string refreshToken, DateTime AccessTokenExpiresAt, DateTime RefreshTokenExpiresAt);
+    public sealed record LoginResponse(
+        string AccessToken, 
+        string RefreshToken, 
+        DateTime AccessTokenExpiresAt, 
+        DateTime RefreshTokenExpiresAt
+        );
     //public sealed record RefreshTokenRequest(string refreshToken, string);
 
 }

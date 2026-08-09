@@ -1,16 +1,13 @@
 ﻿using GomMessage.Application.Auth.Dtos;
 using GomMessage.Application.Interfaces;
-using JWT.Algorithms;
-using JWT.Builder;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GomMessage.Infrastructure.Services
 {
@@ -35,22 +32,37 @@ namespace GomMessage.Infrastructure.Services
         }
         private (string token, DateTime expiresAt) GenerateAccessToken(string userId, string email, string name)
         {
-            var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.Value.ExpirationInHours);
-            _logger.LogInformation("jwt issuer: {issuer}, audience: {audience}, " +
-                "expiration: {expiration}", _jwtSettings.Value.Issuer, _jwtSettings.Value.Audience, expiresAt);
-            var expUnix = new DateTimeOffset(expiresAt).ToUnixTimeSeconds();
-            var token = JwtBuilder.Create()
-            .WithAlgorithm(new HMACSHA256Algorithm())
-            .WithSecret(_jwtSettings.Value.Secret)
-            .AddClaim("exp", expUnix)
-            .AddClaim("iss", _jwtSettings.Value.Issuer)
-            .AddClaim("aud", _jwtSettings.Value.Audience)
-            .AddClaim("sub", userId)
-            .AddClaim("email", email)
-            .AddClaim("name", name)
-            .Encode();
+            var expiresAt = DateTime.UtcNow.AddHours(_jwtSettings.Value.ExpirationInHours);
 
-            return (token, expiresAt);
+            _logger.LogInformation("Generating JWT. Issuer: {Issuer}, Audience: {Audience}, ExpiresAt: {ExpiresAt}",
+                _jwtSettings.Value.Issuer, _jwtSettings.Value.Audience, expiresAt);
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(JwtRegisteredClaimNames.Name, name),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Value.Secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // 3. Khởi tạo Token Descriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = expiresAt,
+                Issuer = _jwtSettings.Value.Issuer,
+                Audience = _jwtSettings.Value.Audience,
+                SigningCredentials = creds
+            };
+
+            // 4. Sinh ra chuỗi JWT
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return (tokenString, expiresAt);
+
         }
         private (string token, DateTime expiresAt) GenerateRefreshToken()
         {
@@ -68,8 +80,8 @@ namespace GomMessage.Infrastructure.Services
             var (accessToken, accessTokenExpiresAt) = GenerateAccessToken(userId, email, name);
             var (refreshToken, refreshTokenExpiresAt) = GenerateRefreshToken();
             LoginResponse response = new LoginResponse(
-                 accessToken: accessToken,
-                 refreshToken: refreshToken,
+                 AccessToken: accessToken,
+                 RefreshToken: refreshToken,
                  AccessTokenExpiresAt: accessTokenExpiresAt,
                  RefreshTokenExpiresAt: refreshTokenExpiresAt
              );

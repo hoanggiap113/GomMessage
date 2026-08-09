@@ -1,4 +1,4 @@
-﻿using GomMessage.Application.Interfaces;
+﻿using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Entities;
 using GomMessage.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

@@ -60,11 +60,26 @@ namespace GomMessage.Api.Controllers
         public async Task<IActionResult> Login([FromBody] LoginCommand dto, CancellationToken ct)
         {
             var result = await _mediator.Send(dto);
+            var accessTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,             // Chống XSS, FE không đọc được qua document.cookie
+                Secure = true,               // Yêu cầu HTTPS (khi dev localhost có thể để false nếu không dùng https)
+                SameSite = SameSiteMode.Lax, // Dùng Lax thay vì Strict để tránh rớt cookie khi redirect từ trang ngoài
+                Expires = result.AccessTokenExpiresAt
+            };
+            var refreshTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = result.RefreshTokenExpiresAt
+            };
+            Response.Cookies.Append("access_token", result.AccessToken, accessTokenCookieOptions);
+            Response.Cookies.Append("refresh_token", result.RefreshToken, refreshTokenCookieOptions);
             return Ok(new
             {
                 success = true,
                 message = "User logged in successfully",
-                data = result
             });
         }
     }

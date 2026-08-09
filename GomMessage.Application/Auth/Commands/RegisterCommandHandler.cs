@@ -1,5 +1,6 @@
 ﻿using GomMessage.Application.Auth.Dtos;
 using GomMessage.Application.Interfaces;
+using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Entities;
 using GomMessage.Domain.Exceptions;
 using MediatR;
