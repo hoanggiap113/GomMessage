@@ -17,11 +17,9 @@ namespace GomMessage.Infrastructure.Repository
         {
             _context = context;
         }
-        public async Task CreateTokenAsync(string token, Guid userId, DateTime expiration, CancellationToken ct)
+        public void CreateToken(RefreshToken refreshToken)
         {
-            var refreshToken = RefreshToken.Create(userId:userId, tokenHash:token, expiresAt:expiration);
-            await _context.RefreshTokens.AddAsync(refreshToken, ct);
-            await _context.SaveChangesAsync(ct);
+            _context.RefreshTokens.Add(refreshToken);
         }
 
         public async Task<RefreshToken?> GetByUserId(Guid userId, CancellationToken ct)
@@ -35,14 +33,9 @@ namespace GomMessage.Infrastructure.Repository
             return rt;
         }
 
-        public async Task RevokeRefreshToken(string token, CancellationToken ct)
+        public void RevokeRefreshToken(RefreshToken refreshToken)
         {
-            var existRt = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.TokenHash == token, ct);
-            if (existRt != null)
-            {
-                _context.RefreshTokens.Remove(existRt);
-                await _context.SaveChangesAsync(ct);
-            }
+            _context.RefreshTokens.Remove(refreshToken);
         }
     }
 }

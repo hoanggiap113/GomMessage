@@ -24,6 +24,8 @@ namespace GomMessage.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());
+
             //Redis Server Configuration
             var redisSection = configuration.GetSection("RedisCacheSettings");
             var redisSettings = redisSection.Get<RedisSettings>() ?? new RedisSettings();
@@ -46,8 +48,13 @@ namespace GomMessage.Infrastructure
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+
                         ValidateAudience = true,
+                        ValidAudience = configuration["Jwt:Audience"],
+
                         ValidateLifetime = true,
+
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!))
@@ -66,13 +73,22 @@ namespace GomMessage.Infrastructure
                         }
                     };
                 });
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+
+            //HttpContext
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ICacheService, CacheService>();
-            services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
+            services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IHashPasswordService, HashPasswordService>();
             services.AddTransient<IMailService, MailService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<ITenantRepository, TenantRepository>();
+           
+
             return services;
         }
     }

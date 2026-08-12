@@ -1,6 +1,7 @@
 ﻿using GomMessage.Application.Auth.Dtos;
 using GomMessage.Application.Interfaces;
-
+using GomMessage.Application.Interfaces.Repositories;
+using GomMessage.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,15 +18,15 @@ namespace GomMessage.Infrastructure.Services
         public string Issuer { get; set; } = string.Empty;
         public string Audience { get; set; } = string.Empty;
         public int ExpirationInHours { get; set; } = 24;
-
         public int RefreshTokenExpirationInDays { get; set; } = 7;
     }
 
-    public class JwtGeneratorService : IJwtGeneratorService
+    public class JwtService : IJwtService
     {
-        private readonly ILogger<JwtGeneratorService> _logger;
+        private readonly ILogger<JwtService> _logger;
         private readonly IOptions<JwtSettings> _jwtSettings;
-        public JwtGeneratorService(ILogger<JwtGeneratorService> logger, IOptions<JwtSettings> jwtSettings)
+        private readonly IUserRepository _userRepository;
+        public JwtService(ILogger<JwtService> logger, IOptions<JwtSettings> jwtSettings)
         {
             _logger = logger;
             _jwtSettings = jwtSettings;
@@ -46,7 +47,6 @@ namespace GomMessage.Infrastructure.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Value.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // 3. Khởi tạo Token Descriptor
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -56,7 +56,7 @@ namespace GomMessage.Infrastructure.Services
                 SigningCredentials = creds
             };
 
-            // 4. Sinh ra chuỗi JWT
+            // Jwt generation
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
@@ -75,11 +75,11 @@ namespace GomMessage.Infrastructure.Services
 
             return (token, expiresAt);
         }
-        public LoginResponse GenerateToken(string userId, string email, string name)
+        public TokenResponse GenerateToken(string userId, string email, string name)
         {
             var (accessToken, accessTokenExpiresAt) = GenerateAccessToken(userId, email, name);
             var (refreshToken, refreshTokenExpiresAt) = GenerateRefreshToken();
-            LoginResponse response = new LoginResponse(
+            TokenResponse response = new TokenResponse(
                  AccessToken: accessToken,
                  RefreshToken: refreshToken,
                  AccessTokenExpiresAt: accessTokenExpiresAt,
@@ -87,5 +87,6 @@ namespace GomMessage.Infrastructure.Services
              );
             return response;
         }
+
     }
 }

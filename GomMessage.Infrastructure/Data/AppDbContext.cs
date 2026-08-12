@@ -1,15 +1,15 @@
+using GomMessage.Application.Interfaces;
 using GomMessage.Domain.Common;
 using GomMessage.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GomMessage.Infrastructure.Data;
 
-public sealed class AppDbContext : DbContext
+public sealed class AppDbContext : DbContext, IUnitOfWork
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-
     public DbSet<User> Users => Set<User>();
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<UserTenant> UserTenants => Set<UserTenant>();
@@ -28,7 +28,7 @@ public sealed class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        modelBuilder.HasDefaultSchema("cqa");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 

@@ -10,7 +10,6 @@ public sealed class Tenant : AuditableEntity
     public TenantSlug Slug { get; private set; } = null!;
     public Guid OwnerId { get; private set; }
     public JsonContent? Settings { get; private set; }
-
     private Tenant()
     {
     }

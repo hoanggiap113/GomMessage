@@ -17,11 +17,9 @@ namespace GomMessage.Infrastructure.Repository
         {
             _context = context;
         }   
-        public async Task<User> CreateAsync(User user, CancellationToken ct)
+        public void AddUser(User user)
         {
-            var entityEntry = await _context.Users.AddAsync(user, ct);
-            await _context.SaveChangesAsync(ct);
-            return entityEntry.Entity;
+            var entityEntry = _context.Users.AddAsync(user);
         }
 
         public async Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default)
@@ -44,9 +42,10 @@ namespace GomMessage.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        public Task UpdateUserAsync(User user, CancellationToken ct)
+        public void UpdateUserAsync(User user)
         {
             throw new NotImplementedException();
         }
+
     }
 }

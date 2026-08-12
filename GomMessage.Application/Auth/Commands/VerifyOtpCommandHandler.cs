@@ -4,8 +4,6 @@ using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Entities;
 using GomMessage.Domain.Exceptions;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Commands
 {
@@ -15,14 +13,16 @@ namespace GomMessage.Application.Auth.Commands
 
         private readonly IUserRepository _userRepository;
         private readonly ICacheService _cacheService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public VerifyOtpCommandHandler(
             IUserRepository userRepository,
-            ICacheService cacheService
-            )
+            ICacheService cacheService,
+            IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _cacheService = cacheService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<string> Handle(VerifyOtpCommand request, CancellationToken cancellationToken)
@@ -31,6 +31,7 @@ namespace GomMessage.Application.Auth.Commands
             {
                 throw new DomainException("User already exists");
             }
+
             var cacheKey = $"user_{request.Email}";
             var userCache = await _cacheService.GetAsync<UserCache>(cacheKey, cancellationToken);
             if (userCache == null)
@@ -48,8 +49,12 @@ namespace GomMessage.Application.Auth.Commands
                 );
 
                 newUser.Activate();
-                await _userRepository.CreateAsync(newUser, cancellationToken);
-                await _cacheService.RemoveAsync(cacheKey);
+
+                _userRepository.AddUser(newUser);
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                await _cacheService.RemoveAsync(cacheKey, cancellationToken);
 
                 return "OTP verified successfully";
             }
@@ -58,31 +63,20 @@ namespace GomMessage.Application.Auth.Commands
 
             if (IsMaxAttemptsReached(newFailedAttempts))
             {
-                await _cacheService.RemoveAsync(request.Email);
+                await _cacheService.RemoveAsync(cacheKey, cancellationToken);
                 throw new DomainException($"Otp has been entered incorrectly {MaxFailedAttempts} times. Please request a new code.");
             }
 
             var updatedUserCache = userCache with { FailedAttempts = newFailedAttempts };
-            await _cacheService.SetAsync(request.Email, updatedUserCache);
+
+            await _cacheService.SetAsync(cacheKey, updatedUserCache,TimeSpan.FromMinutes(60), cancellationToken);
 
             int remaining = GetRemainingAttempts(newFailedAttempts);
             throw new DomainException($"Otp not correct. {remaining} tries remaining.");
         }
-        private static bool IsOtpValid(string providedOtp, string cachedOtp)
-        {
-            return providedOtp == cachedOtp;
-        }
 
-        private static bool IsMaxAttemptsReached(int failedAttempts)
-        {
-            return failedAttempts >= MaxFailedAttempts;
-        }
-
-        private static int GetRemainingAttempts(int failedAttempts)
-        {
-            return MaxFailedAttempts - failedAttempts;
-        }
-
-   
+        private static bool IsOtpValid(string providedOtp, string cachedOtp) => providedOtp == cachedOtp;
+        private static bool IsMaxAttemptsReached(int failedAttempts) => failedAttempts >= MaxFailedAttempts;
+        private static int GetRemainingAttempts(int failedAttempts) => MaxFailedAttempts - failedAttempts;
     }
 }

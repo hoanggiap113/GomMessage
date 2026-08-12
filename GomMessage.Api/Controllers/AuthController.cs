@@ -53,6 +53,46 @@ namespace GomMessage.Api.Controllers
                 data = result
             });
         }
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RefreshToken(CancellationToken ct)
+        {
+            var refreshToken = Request.Cookies["refresh_token"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Refresh token is missing"
+                });
+            }
+            var command = new RefreshTokenCommand(refreshToken);
+            var result = await _mediator.Send(command, ct);
+            var accessTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = result.AccessTokenExpiresAt
+            };
+            var refreshTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = result.RefreshTokenExpiresAt
+            };
+            Response.Cookies.Append("access_token", result.AccessToken, accessTokenCookieOptions);
+            Response.Cookies.Append("refresh_token", result.RefreshToken, refreshTokenCookieOptions);
+            return Ok(new
+            {
+                success = true,
+                message = "Access token refreshed successfully",
+            });
+        }
+
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -62,9 +102,9 @@ namespace GomMessage.Api.Controllers
             var result = await _mediator.Send(dto);
             var accessTokenCookieOptions = new CookieOptions
             {
-                HttpOnly = true,             // Chống XSS, FE không đọc được qua document.cookie
-                Secure = true,               // Yêu cầu HTTPS (khi dev localhost có thể để false nếu không dùng https)
-                SameSite = SameSiteMode.Lax, // Dùng Lax thay vì Strict để tránh rớt cookie khi redirect từ trang ngoài
+                HttpOnly = true,            
+                Secure = true,              
+                SameSite = SameSiteMode.Lax,
                 Expires = result.AccessTokenExpiresAt
             };
             var refreshTokenCookieOptions = new CookieOptions

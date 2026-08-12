@@ -9,11 +9,11 @@ namespace GomMessage.Application.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> CreateAsync(User user,CancellationToken ct);
+        void AddUser(User user);
         Task<bool> ExistsByEmailAsync(string email, CancellationToken ct);
         Task<User?> GetByEmailAsync(string email, CancellationToken ct);
         Task<User?> GetByIdAsync(Guid id, CancellationToken ct); 
         Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken ct);
-        Task UpdateUserAsync(User user, CancellationToken ct);
+        void UpdateUserAsync(User user);
     }
 }

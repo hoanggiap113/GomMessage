@@ -4,16 +4,11 @@ using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Entities;
 using GomMessage.Domain.Exceptions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Commands
 {
-    public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, string>
+    public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly ICacheService _cacheService;
@@ -30,7 +25,7 @@ namespace GomMessage.Application.Auth.Commands
             _hashPasswordService = hashPasswordService;
             _emailService = emailService;
         }
-        public async Task<string> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken);
             if (existingUser)
@@ -51,11 +46,6 @@ namespace GomMessage.Application.Auth.Commands
                 request.Name, 
                 request.Telephone);
 
-            if (cacheUser != null)
-            {
-                throw new DomainException("User with this email is already in the process of registration.");
-            }
-
             string otp = GenerateOtp();
             var userCache = new UserCache(
                 user.Name,
@@ -65,11 +55,8 @@ namespace GomMessage.Application.Auth.Commands
                 user.Telephone);
             await _cacheService.SetAsync(cacheKey, userCache,
                  TimeSpan.FromHours(1),cancellationToken);
-
             await _emailService.SendOtpCode(user.Email, user.Email, otp);
-            
-            return "success register!";
-    
+            return Unit.Value;
         }
         private string GenerateOtp(int length = 6)
         {
@@ -78,6 +65,5 @@ namespace GomMessage.Application.Auth.Commands
 
             return randomNumber.ToString($"D{length}");
         }
-
     }
 }

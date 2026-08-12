@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace GomMessage.Api.Middlewares
 {
@@ -32,6 +33,11 @@ namespace GomMessage.Api.Middlewares
             }
             var (statusCode, title, detail) = exception switch
             {
+                DuplicateNameException duplicateEx => (
+                    StatusCodes.Status409Conflict,
+                    "Duplicate Data",
+                    duplicateEx.Message
+                ),
                 DomainException domainEx => (
                     GetDomainStatusCode(domainEx),
                     "Domain Validation Error",

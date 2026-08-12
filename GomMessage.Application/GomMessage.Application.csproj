@@ -8,9 +8,14 @@
     <AssemblyName>GomMessage.Application</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Tenant\**" />
+    <EmbeddedResource Remove="Tenant\**" />
+    <None Remove="Tenant\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Auth\Queries\" />
     <Folder Include="Mail\" />
-    <Folder Include="Tenant\" />
+    <Folder Include="Channel\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="9.0.1" />

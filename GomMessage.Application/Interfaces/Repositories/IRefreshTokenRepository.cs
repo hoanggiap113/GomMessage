@@ -9,10 +9,9 @@ namespace GomMessage.Application.Interfaces.Repositories
 {
     public interface IRefreshTokenRepository
     {
-        Task CreateTokenAsync(string token, Guid userId, DateTime expiration, CancellationToken ct);
-
+        void CreateToken(RefreshToken refreshToken);
         Task<RefreshToken?> GetByUserId(Guid userId, CancellationToken ct);
         Task<RefreshToken?> GetRefreshTokenByToken(string token, CancellationToken ct);    
-        Task RevokeRefreshToken(string token, CancellationToken ct);
+        void RevokeRefreshToken(RefreshToken refreshToken);
     }
 }

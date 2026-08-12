@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Auth.Dtos
 {
-    public sealed record LoginResponse(
+    public sealed record TokenResponse(
         string AccessToken, 
         string RefreshToken, 
         DateTime AccessTokenExpiresAt, 
