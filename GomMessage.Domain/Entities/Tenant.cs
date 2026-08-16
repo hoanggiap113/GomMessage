@@ -1,6 +1,7 @@
 using GomMessage.Domain.Common;
 using GomMessage.Domain.Events;
 using GomMessage.Domain.ValueObjects;
+using System.Data;
 
 namespace GomMessage.Domain.Entities;
 
@@ -10,6 +11,9 @@ public sealed class Tenant : AuditableEntity
     public TenantSlug Slug { get; private set; } = null!;
     public Guid OwnerId { get; private set; }
     public JsonContent? Settings { get; private set; }
+
+    private readonly List<UserTenant> _userTenants = new();
+    public IReadOnlyCollection<UserTenant> UserTenants => _userTenants.AsReadOnly();
     private Tenant()
     {
     }
@@ -26,6 +30,7 @@ public sealed class Tenant : AuditableEntity
     public static Tenant Create(string name, string slug, Guid ownerId, string? settingsJson = null)
     {
         var tenant = new Tenant(Guid.NewGuid(), name, TenantSlug.Create(slug), ownerId, JsonContent.CreateOrNull(settingsJson));
+        tenant._userTenants.Add(UserTenant.Create(ownerId, tenant.Id, Enums.TenantRole.Owner));
         tenant.AddDomainEvent(new TenantCreatedDomainEvent(tenant.Id, tenant.OwnerId, tenant.Slug.Value));
         return tenant;
     }

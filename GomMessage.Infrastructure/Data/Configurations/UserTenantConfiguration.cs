@@ -51,7 +51,7 @@ internal sealed class UserTenantConfiguration : IEntityTypeConfiguration<UserTen
             .HasConstraintName("fk_user_tenants_user");
 
         builder.HasOne<Tenant>()
-            .WithMany()
+            .WithMany(t => t.UserTenants)
             .HasForeignKey(membership => membership.TenantId)
             .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("fk_user_tenants_tenant");

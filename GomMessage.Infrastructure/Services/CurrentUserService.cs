@@ -1,4 +1,5 @@
 ﻿using GomMessage.Application.Interfaces;
+using GomMessage.Application.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System;
@@ -13,9 +14,13 @@ namespace GomMessage.Infrastructure.Services
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+
+        public CurrentUserService(
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _httpContextAccessor = httpContextAccessor;
+
         }
 
         public string? UserId

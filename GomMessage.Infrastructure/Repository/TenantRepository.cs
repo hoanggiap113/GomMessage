@@ -1,12 +1,8 @@
 ﻿using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Entities;
 using GomMessage.Infrastructure.Data;
+using GomMessage.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GomMessage.Infrastructure.Repository
 {
@@ -22,9 +18,12 @@ namespace GomMessage.Infrastructure.Repository
             _appDbContext.Tenants.Add(tenant);
 
         }
-        public Task GetListTenantsAsync(Tenant[] tenants, CancellationToken ct)
+        public async Task<List<Tenant>> GetListTenantsAsync(object? filter, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Tenants
+                .AsNoTracking()
+                .ApplyDynamicFilter(filter)
+                .ToListAsync(ct);
         }
 
         public async Task<Tenant?> GetTenantById(string id, CancellationToken ct)

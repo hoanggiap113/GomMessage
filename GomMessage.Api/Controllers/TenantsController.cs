@@ -1,4 +1,5 @@
 ﻿using GomMessage.Application.Tenants.Commands;
+using GomMessage.Application.Tenants.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,5 +35,26 @@ namespace GomMessage.Api.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTenants(
+            CancellationToken ct, 
+            [FromQuery] int page = 1, 
+            [FromQuery] int limit = 10)
+        {
+            var result = await _mediator.Send(new GetTenantsQuery(page, limit), ct);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Tenants retrieved successfully",
+                data = result
+            });
+
+        }
     }
 }

@@ -49,5 +49,8 @@ internal sealed class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.HasIndex(tenant => tenant.Name)
             .IsUnique()
             .HasDatabaseName("uq_tenants_name");
+
+        builder.Navigation(t => t.UserTenants)
+               .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

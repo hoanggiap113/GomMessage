@@ -2,14 +2,9 @@
 using GomMessage.Application.Interfaces.Repositories;
 using GomMessage.Domain.Common;
 using GomMessage.Domain.Entities;
-using GomMessage.Domain.Exceptions;
 using MediatR;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace GomMessage.Application.Tenants.Commands
 {
@@ -48,7 +43,6 @@ namespace GomMessage.Application.Tenants.Commands
                     request.Slug,
                     Guid.Parse(currentUserId),
                     request.Settings
-
             );
             _tenantRepository.CreateTenant(newTenant);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
