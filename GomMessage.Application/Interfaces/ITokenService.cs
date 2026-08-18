@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Interfaces
 {
-    public interface IJwtService
+    public interface ITokenService
     {
         TokenResponse GenerateToken(string userId, string email, string name);
+        (string RawToken, string HashedToken) GenerateInvitationToken();
+        string HashInvitationToken(string rawToken);
     }
 }

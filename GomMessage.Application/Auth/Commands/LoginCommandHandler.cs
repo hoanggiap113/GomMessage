@@ -16,14 +16,14 @@ namespace GomMessage.Application.Auth.Commands
     public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, TokenResponse>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IHashPasswordService _hashPasswordService;
-        private readonly IJwtService _jwtGeneratorService;
+        private readonly IBcryptService _hashPasswordService;
+        private readonly ITokenService _jwtGeneratorService;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IUnitOfWork _unitOfWork;
         public LoginCommandHandler(
             IUserRepository userRepository, 
-            IHashPasswordService hashPasswordService,
-            IJwtService jwtGeneratorService, 
+            IBcryptService hashPasswordService,
+            ITokenService jwtGeneratorService, 
             IRefreshTokenRepository refreshTokenRepository,
             IUnitOfWork unitOfWork
             )

@@ -1,7 +1,5 @@
 ﻿using GomMessage.Application.Auth.Dtos;
 using GomMessage.Application.Interfaces;
-using GomMessage.Application.Interfaces.Repositories;
-using GomMessage.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,12 +19,11 @@ namespace GomMessage.Infrastructure.Services
         public int RefreshTokenExpirationInDays { get; set; } = 7;
     }
 
-    public class JwtService : IJwtService
+    public class TokenService : ITokenService
     {
-        private readonly ILogger<JwtService> _logger;
+        private readonly ILogger<TokenService> _logger;
         private readonly IOptions<JwtSettings> _jwtSettings;
-        private readonly IUserRepository _userRepository;
-        public JwtService(ILogger<JwtService> logger, IOptions<JwtSettings> jwtSettings)
+        public TokenService(ILogger<TokenService> logger, IOptions<JwtSettings> jwtSettings)
         {
             _logger = logger;
             _jwtSettings = jwtSettings;
@@ -88,5 +85,33 @@ namespace GomMessage.Infrastructure.Services
             return response;
         }
 
+        public (string RawToken, string HashedToken) GenerateInvitationToken()
+        {
+            byte[] randomBytes = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+
+            // Chuyển thành chuỗi URL-Safe Base64 (dùng gửi qua email)
+            string rawToken = Convert.ToBase64String(randomBytes)
+                .Replace("+", "-")
+                .Replace("/", "_")
+                .TrimEnd('=');
+
+            // Hash lại bằng SHA-256 
+            string hashedToken = HashInvitationToken(rawToken);
+            return (rawToken, hashedToken);
+        }
+
+        public string HashInvitationToken(string rawToken)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(rawToken);
+                byte[] hash = sha256.ComputeHash(bytes);
+                return Convert.ToHexString(hash); 
+            }
+        }
     }
 }

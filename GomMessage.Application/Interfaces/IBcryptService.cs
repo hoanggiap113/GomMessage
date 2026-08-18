@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Application.Interfaces
 {
-    public interface IHashPasswordService
+    public interface IBcryptService
     {
         string HashPassword(string password);
         bool VerifyPassword(string password, string hashedPassword);

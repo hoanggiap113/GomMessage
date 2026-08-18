@@ -35,5 +35,10 @@ namespace GomMessage.Infrastructure.Repository
             return await _appDbContext.Tenants.FirstOrDefaultAsync(x => x.Name == name,ct);
 
         }
+
+        public async Task<bool> IsUserExistInTenantAsync(Guid tenantId, string userId, CancellationToken ct)
+        {
+            return await _appDbContext.UserTenants.AnyAsync(x => x.TenantId == tenantId && x.UserId == Guid.Parse(userId), ct);
+        }
     }
 }

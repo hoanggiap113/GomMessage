@@ -9,12 +9,12 @@ namespace GomMessage.Application.Auth.Commands
     public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, TokenResponse>
     {
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IJwtService _jwtGeneratorService;
+        private readonly ITokenService _jwtGeneratorService;
         private readonly IUserRepository _userRepository;
 
         public RefreshTokenCommandHandler(
             IRefreshTokenRepository refreshTokenRepository, 
-            IJwtService jwtGeneratorService,
+            ITokenService jwtGeneratorService,
             IUserRepository userRepository
             )
         {

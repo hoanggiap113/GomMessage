@@ -11,6 +11,7 @@ namespace GomMessage.Application.Interfaces
     {
         Task<bool> SendMail(MailData mailData);
         Task<bool> SendOtpCode(string email,string userName, string otpCode);
+        Task<bool> SendInvitation(string Email, string TenantName, string UserName, string InvitationLink);
 
     }
 }

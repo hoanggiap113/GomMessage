@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GomMessage.Infrastructure.Services
 {
-    public class HashPasswordService : IHashPasswordService
+    public class BcryptService : IBcryptService
     {
         private const int WorkFactor = 12;
         public string HashPassword(string password)

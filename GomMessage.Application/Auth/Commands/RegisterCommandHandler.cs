@@ -12,12 +12,12 @@ namespace GomMessage.Application.Auth.Commands
     {
         private readonly IUserRepository _userRepository;
         private readonly ICacheService _cacheService;
-        private readonly IHashPasswordService _hashPasswordService;
+        private readonly IBcryptService _hashPasswordService;
         private readonly IMailService _emailService;
 
         public RegisterCommandHandler(IUserRepository userRepository,
             ICacheService cacheService, 
-            IHashPasswordService hashPasswordService, 
+            IBcryptService hashPasswordService, 
             IMailService emailService)
         {
             _userRepository = userRepository;
@@ -54,7 +54,7 @@ namespace GomMessage.Application.Auth.Commands
                 otp,
                 user.Telephone);
             await _cacheService.SetAsync(cacheKey, userCache,
-                 TimeSpan.FromHours(1),cancellationToken);
+                 TimeSpan.FromMinutes(30),cancellationToken);
             await _emailService.SendOtpCode(user.Email, user.Email, otp);
             return Unit.Value;
         }

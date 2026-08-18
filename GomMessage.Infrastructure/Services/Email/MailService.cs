@@ -21,6 +21,41 @@ namespace GomMessage.Infrastructure.Services.Email
             _mailSettings = options.Value;
         }
 
+        public async Task<bool> SendInvitation(string Email, string UserName, string TenantName, string InvitationLink)
+        {
+            try
+            {
+                string baseDir = AppContext.BaseDirectory;
+                string templatePath = Path.Combine(baseDir, "Services", "Email", "EmailTemplates", "InvitationTenant.html");
+
+                if (!File.Exists(templatePath))
+                {
+                    Console.WriteLine($"[MailService Error]: File not found at {templatePath}");
+                    return false;
+                }
+                string htmlBody = await File.ReadAllTextAsync(templatePath);
+                htmlBody = htmlBody.Replace("{InviteEmail}", Email)
+                                   .Replace("{InviterName}", UserName)
+                                   .Replace("{TenantName}", TenantName)
+                                   .Replace("{InvitationLink}", InvitationLink);
+
+                var mailData = new MailData
+                {
+                    EmailToId = Email,
+                    EmailSubject = $"Lời mời tham gia không gian làm việc {TenantName} trên GomMessage",
+                    EmailBody = htmlBody,
+                    IsHtml = true
+                };
+
+                return await SendMail(mailData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SendOtpCode Error]: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<bool> SendMail(MailData mailData)
         {
             try

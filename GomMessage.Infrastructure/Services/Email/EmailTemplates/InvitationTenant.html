@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <title>Lời mời tham gia không gian làm việc trên GomMessage</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f2f2f2; font-family:Arial, Helvetica, sans-serif; color:#2b2b2b;">
+    <!-- Preheader -->
+    <div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent;">
+        {InviterName} đã mời bạn tham gia vào không gian {TenantName} trên GomMessage.
+    </div>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+           style="width:100%; background-color:#f2f2f2;">
+        <tr>
+            <td align="center">
+
+                <!-- Header Brand -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                       style="width:100%; background-color:#159657;">
+                    <tr>
+                        <td align="center" style="padding:28px 16px 72px 16px;">
+                            <div style="font-size:28px; line-height:34px; font-weight:700; color:#ffffff;">
+                                GomMessage
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Main Card -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                       style="width:100%; max-width:620px; margin-top:-56px; background-color:#ffffff; border-collapse:collapse; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+                    <tr>
+                        <td align="center" style="padding:34px 34px 12px 34px;">
+                            <div style="font-size:26px; line-height:34px; font-weight:600; letter-spacing:0.5px; color:#202124;">
+                                Lời mời tham gia tổ chức
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:10px 34px 0 34px;">
+                            <div style="font-size:14px; line-height:22px; color:#666666;">
+                                Xin chào <strong style="color:#2b2b2b;">{InviteEmail}</strong>,
+                            </div>
+
+                            <div style="margin-top:12px; font-size:14px; line-height:22px; color:#666666;">
+                                <strong style="color:#2b2b2b;">{InviterName}</strong> đã gửi cho bạn lời mời tham gia vào không gian làm việc <strong style="color:#159657;">{TenantName}</strong> trên nền tảng GomMessage.
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- CTA Button -->
+                    <tr>
+                        <td align="center" style="padding:32px 34px 28px 34px;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td align="center" style="border-radius:4px; background-color:#159657;">
+                                        <a href="{InvitationLink}" target="_blank"
+                                           style="display:inline-block; padding:14px 32px; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none; border-radius:4px; letter-spacing:0.5px;">
+                                            Tham gia không gian làm việc
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div style="margin-top:20px; font-size:12px; line-height:18px; color:#888888;">
+                                Hoặc copy đường link này nếu nút bấm không hoạt động:
+                            </div>
+                            <div style="margin-top:6px; font-size:12px; line-height:18px; color:#159657; word-break:break-all;">
+                                <a href="{InvitationLink}" target="_blank" style="color:#159657; text-decoration:underline;">
+                                    {InvitationLink}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Note & Disclaimer -->
+                    <tr>
+                        <td style="padding:0 34px 30px 34px;">
+                            <div style="padding:14px; background-color:#f9fafb; border-left:3px solid #159657; font-size:13px; line-height:20px; color:#666666;">
+                                <strong>Lưu ý:</strong> Lời mời này có hiệu lực trong vòng <strong>{ExpireTime}</strong>. Nếu chưa có tài khoản, bạn sẽ được hướng dẫn đăng ký sau khi bấm vào liên kết.
+                            </div>
+
+                            <div style="margin-top:18px; font-size:13px; line-height:21px; color:#777777;">
+                                Nếu bạn không biết người gửi hoặc không mong muốn tham gia tổ chức này, bạn có thể yên tâm bỏ qua email.
+                            </div>
+
+                            <div style="margin-top:24px; font-size:13px; line-height:21px; color:#777777;">
+                                Trân trọng,<br>
+                                <strong style="color:#555555;">Đội ngũ GomMessage</strong>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Footer -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                       style="width:100%; max-width:620px;">
+                    <tr>
+                        <td style="padding:20px 16px 36px 16px; text-align:center;">
+                            <div style="font-size:12px; line-height:19px; color:#777777;">
+                                Email này được gửi tự động từ hệ thống GomMessage.
+                            </div>
+
+                            <div style="margin-top:6px; font-size:12px; line-height:19px; color:#999999;">
+                                Vui lòng không trả lời trực tiếp email này.
+                            </div>
+
+                            <div style="margin-top:14px; font-size:12px; line-height:19px; color:#999999;">
+                                &copy; GomMessage. All rights reserved.
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

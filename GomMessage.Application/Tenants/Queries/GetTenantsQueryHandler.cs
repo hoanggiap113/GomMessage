@@ -53,7 +53,7 @@ namespace GomMessage.Application.Tenants.Queries
             }
 
             List<Tenant> tenants = await _tenantRepository.GetListTenantsAsync(
-                new { OwnerId = userGuid },
+                new TenantFilterDto { UserId = userId },
                 cancellationToken
             );
             List<TenantResponse> tenantResponses = tenants.Select(t => new TenantResponse(

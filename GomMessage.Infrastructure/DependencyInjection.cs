@@ -82,12 +82,13 @@ namespace GomMessage.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ICacheService, CacheService>();
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IHashPasswordService, HashPasswordService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IBcryptService, BcryptService>();
             services.AddTransient<IMailService, MailService>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<ITenantRepository, TenantRepository>();
-           
+            services.AddScoped<IInvitationRepository, InvitationRepository>();
+
 
             return services;
         }

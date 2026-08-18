@@ -14,5 +14,7 @@ namespace GomMessage.Application.Interfaces.Repositories
         Task<Tenant?> GetTenantById(string id,  CancellationToken ct);
         Task<Tenant?> GetTenantByNameAsync(string name, CancellationToken ct);
 
+        Task<bool> IsUserExistInTenantAsync(Guid tenantId, string userId, CancellationToken ct);
+
     }
 }

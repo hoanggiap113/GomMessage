@@ -14,6 +14,18 @@ public sealed class UserTenant : AggregateRoot
     public DateTimeOffset? JoinedAt { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
 
+    public User User { get; private set; } = null!;
+    public Tenant Tenant { get; private set; } = null!;
+
+    public void UpdateStatus(MembershipStatus status)
+    {
+        Status = status;
+        if (status == MembershipStatus.Active && JoinedAt == null)
+        {
+            JoinedAt = DateTimeOffset.UtcNow;
+        }
+    }
+
     private UserTenant()
     {
     }
